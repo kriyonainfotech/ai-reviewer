@@ -8,7 +8,7 @@ import { Icons } from '../components/Icons'; // Import Icons
 // Set up a pre-configured axios instance
 // This now matches your AdminPanel and works for both dev and prod
 const api = axios.create({
-    baseURL: import.meta.env.DEV ? 'http://localhost:5000/api' : '/api',
+    baseURL: import.meta.env.VITE_API_URL ? 'http://localhost:5000/api' : '/api',
     headers: { 'Content-Type': 'application/json' }
 });
 

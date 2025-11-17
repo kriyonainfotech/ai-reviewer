@@ -5,7 +5,7 @@ import { Icons } from '../components/Icons'; // Import Icons
 // Set up a pre-configured axios instance
 // This is perfect. It uses localhost for dev and proxy for production.
 const api = axios.create({
-    baseURL: import.meta.env.DEV ? 'http://localhost:5000/api' : '/api',
+    baseURL: import.meta.env.VITE_API_URL ? 'http://localhost:5000/api' : '/api',
     // We will set Content-Type in the functions themselves
 });
 
