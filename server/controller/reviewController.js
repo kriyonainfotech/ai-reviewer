@@ -35,7 +35,9 @@ exports.getRandomReview = async (req, res, next) => {
             data.businessServices
         );
 
+        console.log("AI Review Generation Attempted");
         if (aiReview) {
+            console.log("Generated AI Review:", aiReview);
             return res.json({ review: aiReview });
         }
 
