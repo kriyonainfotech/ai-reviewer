@@ -1,4 +1,5 @@
 const Client = require('../ClientModel');
+const { generateUniqueReview } = require('../utils/aiService');
 
 // @desc    Get all reviews for a client
 // @route   GET /api/client/:clientId/reviews
@@ -23,13 +24,29 @@ exports.getRandomReview = async (req, res, next) => {
         const { clientId } = req.params;
         const data = await Client.findOne({ clientId: clientId });
 
-        if (!data || !data.reviews || data.reviews.length === 0) {
-            return res.status(404).json({ message: "Client not found or has no reviews." });
+        if (!data) {
+            return res.status(404).json({ message: "Client not found." });
         }
 
+        // --- 1. Try Context-Aware AI Generation ---
+        const aiReview = await generateUniqueReview(
+            data.clientName,
+            data.businessDescription,
+            data.businessServices
+        );
+
+        if (aiReview) {
+            return res.json({ review: aiReview });
+        }
+
+        // --- 2. Fallback ---
+        // ... existing fallback logic ...
+        if (!data.reviews || data.reviews.length === 0) {
+            return res.json({ review: "Excellent service and very professional team!" });
+        }
         const randomIndex = Math.floor(Math.random() * data.reviews.length);
-        const randomReview = data.reviews[randomIndex];
-        res.json({ review: randomReview });
+        res.json({ review: data.reviews[randomIndex] });
+
     } catch (error) {
         next(error);
     }

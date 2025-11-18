@@ -131,6 +131,31 @@ const ClientForm = React.memo(({ onSubmit, isEdit = false, form, handleFormChang
                             required
                         />
                     </div>
+                    {/* NEW: Business Description */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-300">About the Business</label>
+                        <textarea
+                            name="businessDescription"
+                            value={form.businessDescription}
+                            onChange={handleFormChange}
+                            className="mt-2 w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 bg-gray-800 text-white placeholder-gray-400"
+                            placeholder="e.g., We are a family-owned Italian restaurant..."
+                            rows="2"
+                        />
+                    </div>
+
+                    {/* NEW: Services */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-300">Services (Comma separated)</label>
+                        <input
+                            type="text"
+                            name="businessServices"
+                            value={form.businessServices}
+                            onChange={handleFormChange}
+                            className="mt-2 w-full px-4 py-3 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 bg-gray-800 text-white placeholder-gray-400"
+                            placeholder="e.g., Pizza, Pasta, Catering, Delivery"
+                        />
+                    </div>
                     {/* GOOGLE LINK */}
                     <div>
                         <label className="text-sm font-semibold text-gray-300">Google Review Link</label>
@@ -383,6 +408,8 @@ const AdminPanel = () => {
         clientId: '',
         clientName: '',
         googleReviewLink: '',
+        businessDescription: '', // Add this
+        businessServices: '',    // Add this
         logoUrl: '',
         primaryColor: '#3b82f6',
         secondaryColor: '#ffffff',
@@ -517,6 +544,8 @@ const AdminPanel = () => {
         formData.append('clientId', form.clientId);
         formData.append('clientName', form.clientName);
         formData.append('googleReviewLink', form.googleReviewLink);
+        formData.append('businessDescription', form.businessDescription);
+        formData.append('businessServices', form.businessServices);
         formData.append('logoUrl', form.logoUrl);
         formData.append('primaryColor', form.primaryColor);
         formData.append('secondaryColor', form.secondaryColor);

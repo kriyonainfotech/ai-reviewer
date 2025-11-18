@@ -3,6 +3,8 @@ const Joi = require('joi');
 const clientCreateSchema = Joi.object({
     clientId: Joi.string().alphanum().min(3).max(50).required(),
     clientName: Joi.string().min(3).max(100).required(),
+    businessDescription: Joi.string().allow("").optional(),
+    businessServices: Joi.string().allow("").optional(),
     googleReviewLink: Joi.string().uri().required(),
     logoUrl: Joi.string().uri().allow("").optional(),
     primaryColor: Joi.string().regex(/^#[0-9a-fA-F]{6}$/).required(),
@@ -12,6 +14,8 @@ const clientCreateSchema = Joi.object({
 
 const clientUpdateSchema = Joi.object({
     clientName: Joi.string().min(3).max(100).required(),
+    businessDescription: Joi.string().allow("").optional(),
+    businessServices: Joi.string().allow("").optional(),
     googleReviewLink: Joi.string().uri().required(),
     logoUrl: Joi.string().uri().allow("").optional(),
     primaryColor: Joi.string().regex(/^#[0-9a-fA-F]{6}$/).required(),

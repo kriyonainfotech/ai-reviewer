@@ -11,6 +11,14 @@ const clientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    businessDescription: {
+        type: String,
+        default: ""
+    },
+    businessServices: {
+        type: String, // We can store it as a comma-separated string for simplicity
+        default: ""
+    },
     googleReviewLink: {
         type: String,
         required: true
