@@ -12,60 +12,91 @@ const MODELS_TO_TRY = [
 
 // --- REAL CLIENT EXAMPLES (TRAINING DATA) ---
 const REAL_EXAMPLES = [
-    "I have been to Goa many times. But this time I got a reference of Patel Enterprises from Instagram and contacted Nirav Bhai. We planned everything well. All the tickets, transportation, resort bookings etc... and you won't believe we didn't miss a single place. Whenever we called Nirav Bhai directly he would answer. This is the first time I have seen this cheap and good.",
-    "It was a great experience at Goa. We booked our 3N/4D Goa package from Niravbhai Patel. Starting from selecting hotel till completion of our tour, everything was upto the mark. The package price was also very reasonable. The hotel, meals, sightseeing were amazing. This tour will be memorable.",
-    "We recently booked a trip to Statue of Unity through Nirav Patel. The Hotel was perfect for our group, offering spacious and clean rooms. The staff was friendly and quick to respond to our needs. A big thank you to Nirav patel for making such excellent arrangements!",
-    "Last month we 4 couples booked Goa package from Nirav Bhai. The hotel there was very beautiful and comfortable. There was no problem during the entire tour. Very good service from Niravbhai. And the prices were also very reasonable. Will book from here in future.",
+    "I have been to Goa many times. But this time I got a reference of Patel Enterprises from Instagram and contacted Nirav Bhai. We planned everything well. All the tickets, transportation, resort bookings etc... and you won't believe we didn't miss a single place.",
+    "It was a great experience at Goa. We booked our 3N/4D Goa package from Niravbhai Patel. Starting from selecting hotel till completion of our tour, everything was upto the mark. The package price was also very reasonable.",
+    "We recently booked a trip to Statue of Unity through Nirav Patel. The Hotel was perfect for our group, offering spacious and clean rooms. The staff was friendly and quick to respond to our needs.",
+    "Last month we 4 couples booked Goa package from Nirav Bhai. The hotel there was very beautiful and comfortable. There was no problem during the entire tour. Very good service from Niravbhai.",
     "Great experience..amazing holiday package given by PATEL ENTERPRISE. Everything went very smoothly..thank you for the amazing Himachal trip NiravBhai.",
-    "We planned for our Honeymoon at Rajasthan with Mr. Nirav Patel. He suggested us 2 property at both locations. Both properties were really good with delicious food. Nirav planned everything very well like transportation and sightseeing. He picked up all my calls on timely manner.",
-    "I had a wonderful Experience with Patel Enterprise during my Bali stay. Whole tour was well organise. Thanks to Nirav Bhai for providing value for money package for my family. Everything was Top Notch and the 24-7 support was highly appreciated.",
-    "We had great experience of Goa tour. We were group of 10 people and had awsome management of agency specially from Niravbhai. Thank you Niravbhai for quick response in any matter every time. Thank you for make our first Goa trip so memorable."
+    "We planned for our Honeymoon at Rajasthan with Mr. Nirav Patel. He suggested us 2 property at both locations. Both properties were really good with delicious food. Nirav planned everything very well.",
+    "I had a wonderful Experience with Patel Enterprise during my Bali stay. Whole tour was well organise. Thanks to Nirav Bhai for providing value for money package for my family.",
+    "We had great experience of Goa tour. We were group of 10 people and had awsome management of agency specially from Niravbhai. Thank you Niravbhai for quick response in any matter every time."
 ];
 
-// 1. VIBE: Adjusted to avoid repetitive emotions like "stressed"
-const REVIEW_STYLES = {
-    "casual_friend": "Write like you are texting a friend. Short sentences. Direct.",
-    "detail_observer": "Mention one specific detail (e.g., the view from the room, the driver's behavior, or the food quality).",
-    "straight_to_point": "Don't waste time. Say it was good, mention the price was fair, and finish.",
-    "group_traveler": "Focus on how hard it is to manage a big group and how they made it easy."
+// --- REVIEW PROFILES (Short / Medium / Long) ---
+const PROFILES = {
+    "SHORT_AND_ANONYMOUS": {
+        length_desc: "Short (approx 30-45 words). Keep it under 250 characters.",
+        naming_rule: "STRICTLY FORBIDDEN: Do NOT mention 'Nirav', 'Patel', or the business name. Use 'they', 'the team', or just talk about the service directly.",
+        focus_topics: [
+            "Food quality and taste",
+            "Cleanliness of the room/hotel",
+            "Comfort of the bus/cab",
+            "View from the hotel",
+            "Just a general 'good experience' statement"
+        ],
+        opening_hooks: [
+            "Just came back from...",
+            "Food was...",
+            "Rooms were...",
+            "Had a nice trip to...",
+            "Service was..."
+        ]
+    },
+    "MEDIUM_AND_BALANCED": {
+        length_desc: "Medium (approx 50-60 words). Between 330-370 characters.",
+        naming_rule: "BALANCED: Mention 'Niravbhai' or 'Patel Enterprise' EXACTLY ONCE. Preferably near the end or middle.",
+        focus_topics: [
+            "Smooth coordination and good hotels",
+            "Family enjoyment and safety",
+            "Value for money with good service",
+            "Quick response from the team"
+        ],
+        opening_hooks: [
+            "Our trip to... was well planned.",
+            "Really happy with the service provided...",
+            "Good arrangements made by...",
+            "Everything was upto the mark...",
+            "Nice experience with..."
+        ]
+    },
+    "LONG_AND_PERSONAL": {
+        length_desc: "Detailed (approx 70-90 words). Approx 400-450 characters.",
+        naming_rule: "REQUIRED: You MUST mention one of the following: 'Niravbhai', 'Nirav Patel', 'Mr. Nirav', or 'Patel Enterprise' at least once.",
+        focus_topics: [
+            "The planning process and coordination",
+            "Trustworthiness and reliability",
+            "Detailed feedback on Hotel + Transport",
+            "Overall management of the tour"
+        ],
+        opening_hooks: [
+            "We booked our trip with...",
+            "Big thanks to...",
+            "It was a great experience...",
+            "Honestly, the planning was...",
+            "Highly recommend..."
+        ]
+    }
 };
 
-// 2. OPENING HOOK (NEW): Forces different starting sentence structures
-const OPENING_HOOKS = [
-    "START_WITH_TIME: Start with 'Just returned from...' or 'Last week we went to...'",
-    "START_WITH_GROUP: Start with 'We were a group of...' or 'Me and my family...'",
-    "START_WITH_SKEPTICISM: Start with 'Honestly, I was not sure at first...' or 'First time booking with...'",
-    "START_WITH_LOCATION: Start directly with the place name. E.g., 'Our Goa trip was...'",
-    "START_WITH_THANK_YOU: Start immediately with 'Thanks to Niravbhai...'"
-];
-
-// 3. FOCUS AREA (NEW): Prevents every review from listing "Hotel + Food + Driver + Price"
-const FOCUS_AREAS = [
-    "FOCUS_DRIVER: Talk mainly about the driver/transportation/bus comfort.",
-    "FOCUS_HOTEL: Talk mainly about the hotel rooms and food.",
-    "FOCUS_PLANNING: Talk mainly about how Niravbhai managed the booking/tickets.",
-    "FOCUS_PRICE: Talk mainly about the budget/rates being reasonable."
-];
-
-// 4. NAMING RULE
-const REFERRAL_MODES = [
-    "MODE_PRONOUNS: Do NOT use the business name. Refer to them only as 'the team', 'they', 'the organizers', or 'these guys'.",
-    "MODE_PERSONAL: Focus on the staff. Mention 'Niravbhai' or 'Nirav Patel' specifically instead of the business name.",
-    "MODE_DIRECT: Use the full business name exactly ONCE in the middle of a sentence.",
-    "MODE_IMPLIED: Do not mention the name or 'the team'. Just talk about how great the trip/hotel arrangement was."
-];
+// --- STATE VARIABLE FOR CYCLING ---
+// 0 = Short, 1 = Medium, 2 = Long
+let currentProfileIndex = 0;
+const PROFILE_KEYS = ["SHORT_AND_ANONYMOUS", "MEDIUM_AND_BALANCED", "LONG_AND_PERSONAL"];
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function generateUniqueReview(clientName, description, services) {
     if (!genAI) return null;
 
-    // Random Selection
-    const styles = Object.keys(REVIEW_STYLES);
-    const selectedPersona = REVIEW_STYLES[styles[Math.floor(Math.random() * styles.length)]];
-    const selectedOpening = OPENING_HOOKS[Math.floor(Math.random() * OPENING_HOOKS.length)];
-    const selectedFocus = FOCUS_AREAS[Math.floor(Math.random() * FOCUS_AREAS.length)];
-    const selectedReferralMode = REFERRAL_MODES[Math.floor(Math.random() * REFERRAL_MODES.length)];
+    // 1. STRICT CYCLING LOGIC (Short -> Medium -> Long -> Short...)
+    const profileKey = PROFILE_KEYS[currentProfileIndex];
+    currentProfileIndex = (currentProfileIndex + 1) % PROFILE_KEYS.length; // Cycle: 0, 1, 2, 0, 1...
+
+    const profile = PROFILES[profileKey];
+
+    // 2. Select random hooks within the profile
+    const selectedTopic = profile.focus_topics[Math.floor(Math.random() * profile.focus_topics.length)];
+    const selectedOpening = profile.opening_hooks[Math.floor(Math.random() * profile.opening_hooks.length)];
 
     // Build Context
     let context = "";
@@ -78,25 +109,27 @@ async function generateUniqueReview(clientName, description, services) {
         You are a real customer writing a Google Review for a travel agency.
         
         CONTEXT:
-        - Business Name: "${clientName}" (Use sparingly).
+        - Business Name: "${clientName}".
         - Details: ${context}
-        - Common Themes: Clean hotels, smooth planning, "value for money", responsive staff (Niravbhai).
+        - Common Themes: Clean hotels, smooth planning, "value for money", responsive staff.
 
-        *** TRAINING DATA (STYLE REFERENCE) ***
+        *** GENERATION PROFILE: ${profileKey} ***
+        1. LENGTH: ${profile.length_desc}
+        2. NAMING RULE (CRITICAL): ${profile.naming_rule}
+        3. TOPIC FOCUS: ${selectedTopic}
+        4. OPENING: Start with something like: "${selectedOpening}"
+
+        *** STYLE GUIDE (Indian English) ***
+        - Use phrases like "upto the mark", "very reasonable", "on timely manner".
+        - Keep it simple. Don't use fancy AI words.
+        - Examples of style:
         ${examplesText}
-        ***************************************
 
-        INSTRUCTIONS:
-        1. OPENING RULE: ${selectedOpening} <--- YOU MUST START LIKE THIS.
-        2. CONTENT FOCUS: ${selectedFocus} <--- Talk mostly about this, mention other things briefly.
-        3. Vibe: ${selectedPersona}
-        4. Naming: ${selectedReferralMode}
-        5. Language: "Indian English". Use phrases like "upto the mark", "very reasonable", "on timely manner". Keep it simple and slightly imperfect.
-
-        STRICT NEGATIVE CONSTRAINTS (DO NOT USE):
-        - DO NOT START WITH: "Booked a trip...", "Was very stressed...", "I recently booked...".
-        - NO ROBOTIC PHRASES: "Clean and comfortable" (say "rooms were neat" or "nice rooms"), "Seamless", "Unforgettable", "Gem", "Impeccable".
-        - Do NOT mention "Kerala" unless it is in the input context. If no location is given, use "our trip" or "the tour".
+        STRICT NEGATIVE CONSTRAINTS:
+        - NO "AI words" like: "unforgettable", "seamless", "top-notch", "gem", "impeccable".
+        - Do NOT mention "Kerala" unless provided in input.
+        - If Profile is SHORT, do NOT ramble. Get to the point.
+        - If Profile is LONG, make sure to include the Name/Brand naturally.
     `;
 
     for (const modelName of MODELS_TO_TRY) {
@@ -109,7 +142,7 @@ async function generateUniqueReview(clientName, description, services) {
             // Cleanup
             text = text.replace(/^"|"$/g, '').trim();
             text = text.replace(/^(Here is|Sure, here|Okay|Review:).+?:\s*/i, '');
-            text = text.replace(/^(Subject:|Title:).+?(\n|$)/i, ''); // Remove accidental titles
+            text = text.replace(/^(Subject:|Title:).+?(\n|$)/i, '');
 
             return text;
 
