@@ -48,6 +48,7 @@ const ReviewPage = () => {
                     api.get(`/client/${clientId}/random-review`)
                 ]);
 
+                console.log(c.data, "cc---------")
                 setClient(c.data);
                 setReview(r.data.review);
 
@@ -97,55 +98,59 @@ const ReviewPage = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-between p-6 shimmer-bg text-white">
+        <div
+            className="h-screen w-full flex flex-col items-center justify-between px-5 py-6 overflow-hidden"
+            style={{
+                background: "linear-gradient(180deg, #1F144A 0%, #2D0F4B 100%)",
+            }}
+        >
             {/* Header */}
-            <div className="flex flex-col items-center pt-10 h-28 text-center px-6">
-                <div className="w-16 h-1 bg-purple-400 rounded-full mb-4 opacity-70"></div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-wider uppercase text-white/90" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+            <div className="flex flex-col items-center pt-4 h-24 text-center">
+
+                {/* Clean Logo */}
+                <img
+                    src={client.logoUrl}
+                    alt="Kriyona Logo"
+                    className="w-20 h-20 object-cover opacity-95 mb-2"
+                />
+
+                <h1 className="text-2xl font-extrabold tracking-tight text-white">
                     {client.clientName}
                 </h1>
+
+                <p className="text-[11px] text-white/60">
+                    Verified Review Message
+                </p>
             </div>
 
-            {/* Glass Card */}
-            <div className="w-full max-w-md bg-black/20 backdrop-blur-lg rounded-2xl shadow-xl border border-white/10 p-8 flex flex-col items-center">
-                <div className="text-yellow-400 text-3xl mb-6 tracking-wide">
+            {/* Card */}
+            <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+
+                <div className="text-yellow-500 text-xl mb-3 text-center">
                     ★★★★★
                 </div>
-                <p className="text-center text-white/80 text-lg leading-relaxed mb-8">
+
+                <p className="text-center text-gray-700 text-[13px] leading-relaxed mb-6">
                     {review}
                 </p>
+
                 <button
                     onClick={handleCopy}
-                    className="w-full py-3.5 rounded-xl font-semibold text-lg transition-all duration-300 hover:opacity-90 hover:scale-[1.02] flex items-center justify-center gap-2
-                 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/30"
+                    className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2
+                bg-gradient-to-r from-[#2389FF] to-[#9A1FFF] text-white shadow-md hover:opacity-95 transition-all"
                 >
-                    <Icons.Copy />
+                    <Icons.Copy className="w-4 h-4" />
                     COPY REVIEW
                 </button>
             </div>
 
             {/* Footer */}
-            <div className="pb-6 pt-12 text-center text-gray-400 text-xs opacity-90 h-20 flex flex-col items-center justify-center">
-                <div className="flex items-center gap-2 text-sm text-white/70">
-                    AI
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L9.42 9.42L2 12L9.42 14.58L12 22L14.58 14.58L22 12L14.58 9.42L12 2Z" fill="#60a5fa" />
-                    </svg>
-                    Powered
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                    <svg width="24" height="24" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0 60L24.1935 0H41.9355L17.7419 60H0Z" fill="white" />
-                        <path d="M29.0323 60L53.2258 0H70.9677L46.7742 60H29.0323Z" fill="white" />
-                        <path d="M82.2581 0L58.0645 60H75.8065L100 0H82.2581Z" fill="white" />
-                    </svg>
-                    <span className="font-semibold tracking-wider text-white/90">
-                        Kriyona Infotech
-                    </span>
-                </div>
+            <div className="pb-2 pt-4 text-center text-white/60 text-[11px]">
+                Powered by <span className="font-semibold text-white/90">Kriyona Infotech</span>
             </div>
         </div>
     );
+
 };
 
 export default ReviewPage;

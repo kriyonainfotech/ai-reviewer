@@ -67,6 +67,7 @@ exports.createClient = async (req, res, next) => {
 exports.updateClient = async (req, res, next) => {
     try {
         const { id } = req.params; // this is MongoDB _id
+        console.log(id, "id-------------------------")
 
         // Remove fields that should never be updated
         delete req.body._id;

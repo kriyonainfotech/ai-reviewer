@@ -573,10 +573,21 @@ const AdminPanel = () => {
     const handleUpdateClient = async (e) => {
         e.preventDefault();
         if (!currentClient) return;
+
         try {
             console.log(currentClient, "form to update");
-            // UPDATED: Send as JSON, which is correct for PUT
-            const res = await api.put(`/client/${currentClient._id}`, form, {
+
+            // Create clean copy
+            const payload = { ...form };
+
+            // Remove forbidden fields
+            delete payload.clientId;
+            delete payload.__v;
+            delete payload._id;
+
+            console.log("Payload being sent:", payload);
+
+            const res = await api.put(`/client/${currentClient._id}`, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -585,11 +596,13 @@ const AdminPanel = () => {
             console.log(res.data, "updated client response");
             toast('Client updated successfully!', 'success');
             showList();
+
         } catch (err) {
             console.log(err, "error updating client");
             toast(err.response?.data?.message || 'Failed to update client.', 'error');
         }
     };
+
 
     const handleDeleteClient = async (clientId) => {
         if (!window.confirm(`Are you sure you want to delete client "${clientId}"? This is permanent.`)) {

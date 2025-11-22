@@ -39,11 +39,6 @@ router.post(
     clientController.createClient
 );
 
-// Get + Delete client by clientId (string)
-router.route('/client/:clientId')
-    .get(clientController.getClientDetails)
-    .delete(clientController.deleteClient);
-
 // Update client using MongoDB "_id"
 router.put(
     '/client/:id',
@@ -51,6 +46,13 @@ router.put(
     validateBody(clientUpdateSchema),     // Joi validation
     clientController.updateClient         // Controller
 );
+
+// Get + Delete client by clientId (string)
+router.route('/client/:clientId')
+    .get(clientController.getClientDetails)
+    .delete(clientController.deleteClient);
+
+
 
 
 // ==============================
