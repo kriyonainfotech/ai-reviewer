@@ -111,7 +111,7 @@ const ReviewPage = () => {
                     src={client.logoUrl}
                     alt="Logo"
                     // Responsive logo size: smaller on mobile
-                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover opacity-95 shadow-lg mb-1"
+                    className="w-auto h-16 sm:w-auto sm:h-20 object-cover opacity-95 shadow-lg mb-1"
                 />
 
                 <div className="space-y-0.5">
