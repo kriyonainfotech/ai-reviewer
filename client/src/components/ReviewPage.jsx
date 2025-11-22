@@ -99,53 +99,60 @@ const ReviewPage = () => {
 
     return (
         <div
-            className="h-screen w-full flex flex-col items-center justify-between px-5 py-6 overflow-hidden"
+            // h-[100dvh] fixes the mobile address bar scroll issue
+            className="h-[100dvh] w-full flex flex-col items-center justify-between px-5 py-4 sm:py-6 overflow-hidden"
             style={{
                 background: "linear-gradient(180deg, #1F144A 0%, #2D0F4B 100%)",
             }}
         >
-            {/* Header */}
-            <div className="flex flex-col items-center pt-4 h-24 text-center">
-
-                {/* Clean Logo */}
+            {/* Header: Flex-none ensures it doesn't shrink */}
+            <div className="flex-none flex flex-col items-center text-center space-y-2 pt-2 sm:pt-4">
                 <img
                     src={client.logoUrl}
-                    alt="Kriyona Logo"
-                    className="w-20 h-20 object-cover opacity-95 mb-2"
+                    alt="Logo"
+                    // Responsive logo size: smaller on mobile
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full opacity-95 shadow-lg mb-1"
                 />
 
-                <h1 className="text-2xl font-extrabold tracking-tight text-white">
-                    {client.clientName}
-                </h1>
-
-                <p className="text-[11px] text-white/60">
-                    Verified Review Message
-                </p>
-            </div>
-
-            {/* Card */}
-            <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
-
-                <div className="text-yellow-500 text-xl mb-3 text-center">
-                    ★★★★★
+                <div className="space-y-0.5">
+                    <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white drop-shadow-md">
+                        {client.clientName}
+                    </h1>
+                    <p className="text-[10px] sm:text-[11px] text-white/60 uppercase tracking-wider font-medium">
+                        Verified Review Message
+                    </p>
                 </div>
-
-                <p className="text-center text-gray-700 text-[13px] leading-relaxed mb-6">
-                    {review}
-                </p>
-
-                <button
-                    onClick={handleCopy}
-                    className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2
-                bg-gradient-to-r from-[#2389FF] to-[#9A1FFF] text-white shadow-md hover:opacity-95 transition-all"
-                >
-                    <Icons.Copy className="w-4 h-4" />
-                    COPY REVIEW
-                </button>
             </div>
 
-            {/* Footer */}
-            <div className="pb-2 pt-4 text-center text-white/60 text-[11px]">
+            {/* Card Container: Flex-1 takes all available middle space */}
+            <div className="flex-1 w-full flex items-center justify-center min-h-0 py-4">
+                {/* Card: Max height ensures it never goes off screen */}
+                <div className="w-full max-w-md bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-gray-100 flex flex-col max-h-full">
+
+                    <div className="text-yellow-500 text-xl sm:text-2xl mb-3 text-center flex-none">
+                        ★★★★★
+                    </div>
+
+                    {/* Text Area: Auto overflow handles long text gracefully without scrolling the page */}
+                    <div className="flex-1 overflow-y-auto min-h-0 mb-5 custom-scrollbar">
+                        <p className="text-center text-gray-700 text-sm sm:text-[15px] leading-relaxed font-medium px-2">
+                            {review}
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={handleCopy}
+                        className="flex-none w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2
+                        bg-gradient-to-r from-[#2389FF] to-[#9A1FFF] text-white shadow-lg active:scale-[0.98] transition-all hover:opacity-95"
+                    >
+                        <Icons.Copy className="w-4 h-4" />
+                        COPY REVIEW
+                    </button>
+                </div>
+            </div>
+
+            {/* Footer: Flex-none */}
+            <div className="flex-none pb-1 text-center text-white/50 text-[10px] sm:text-[11px]">
                 Powered by <span className="font-semibold text-white/90">Kriyona Infotech</span>
             </div>
         </div>
