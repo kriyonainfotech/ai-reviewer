@@ -37,6 +37,8 @@ const ReviewPage = () => {
     const [review, setReview] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [destination, setDestination] = useState(''); // New State
+    const [isGenerating, setIsGenerating] = useState(false); // New Loading State
 
     useEffect(() => {
         if (!clientId) return; // Don't fetch if no clientId
@@ -59,7 +61,20 @@ const ReviewPage = () => {
             setLoading(false);
         };
         load();
-    }, [clientId]); // Dependency array
+    }, [clientId]);
+
+    // New Function to Regenerate Review
+    const handleGenerate = async () => {
+        setIsGenerating(true);
+        try {
+            const res = await api.get(`/client/${clientId}/random-review?destination=${encodeURIComponent(destination)}`);
+            setReview(res.data.review);
+            toast("Review refreshed!", "success");
+        } catch (e) {
+            toast("Failed to generate review.", "error");
+        }
+        setIsGenerating(false);
+    };
 
 
     const handleCopy = () => {
@@ -133,8 +148,32 @@ const ReviewPage = () => {
                         ★★★★★
                     </div>
 
+                    {/* NEW: Destination Input */}
+                    <div className="flex gap-2 mb-4">
+                        <input
+                            type="text"
+                            placeholder="Trip destination? (e.g. Goa)"
+                            value={destination}
+                            onChange={(e) => setDestination(e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            onClick={handleGenerate}
+                            disabled={isGenerating}
+                            className={`px-3 py-2 rounded-lg text-white text-sm font-semibold transition-all ${isGenerating ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-95"
+                                }`}
+                        >
+                            {isGenerating ? "..." : <Icons.Refresh className="w-4 h-4" />}
+                        </button>
+                    </div>
+
                     {/* Text Area: Auto overflow handles long text gracefully without scrolling the page */}
-                    <div className="flex-1 overflow-y-auto min-h-0 mb-5 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto min-h-0 mb-5 custom-scrollbar relative">
+                        {isGenerating && (
+                            <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                <div className="spinner w-6 h-6 border-2 border-blue-500 border-t-transparent"></div>
+                            </div>
+                        )}
                         <p className="text-center text-gray-700 text-sm sm:text-[15px] leading-relaxed font-medium px-2">
                             {review}
                         </p>

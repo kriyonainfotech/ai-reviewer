@@ -85,51 +85,61 @@ const PROFILE_KEYS = ["SHORT_AND_ANONYMOUS", "MEDIUM_AND_BALANCED", "LONG_AND_PE
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function generateUniqueReview(clientName, description, services) {
+async function generateUniqueReview(clientName, description, services, destination) {
     if (!genAI) return null;
 
-    // 1. STRICT CYCLING LOGIC (Short -> Medium -> Long -> Short...)
-    const profileKey = PROFILE_KEYS[currentProfileIndex];
-    currentProfileIndex = (currentProfileIndex + 1) % PROFILE_KEYS.length; // Cycle: 0, 1, 2, 0, 1...
+    // 1. Random Profile Selection (Weighted for realism)
+    // 50% Short, 30% Medium, 20% Long
+    const rand = Math.random();
+    let profileKey = "SHORT_AND_ANONYMOUS";
+    if (rand > 0.5) profileKey = "MEDIUM_AND_BALANCED";
+    if (rand > 0.8) profileKey = "LONG_AND_PERSONAL";
 
     const profile = PROFILES[profileKey];
 
     // 2. Select random hooks within the profile
     const selectedTopic = profile.focus_topics[Math.floor(Math.random() * profile.focus_topics.length)];
-    const selectedOpening = profile.opening_hooks[Math.floor(Math.random() * profile.opening_hooks.length)];
+    // We remove strict opening hooks enforcement in the prompt to allow more variety, 
+    // but keep them as "inspiration".
+    const exampleOpening = profile.opening_hooks[Math.floor(Math.random() * profile.opening_hooks.length)];
 
     // Build Context
     let context = "";
-    if (description) context += `Business: "${description}". `;
-    if (services) context += `Services: "${services}". `;
+    if (description) context += `Business Description: "${description}". `;
+    if (services) context += `Services Offered: "${services}". `;
+    if (destination) context += `Specifc Trip Destination: "${destination}". `;
 
     const examplesText = REAL_EXAMPLES.map(ex => `- "${ex}"`).join("\n");
 
     const prompt = `
         You are a real customer writing a Google Review for a travel agency.
-        
+        Your goal is to sound 100% AUTHENTIC and NATURAL. Avoid "AI patterns".
+
         CONTEXT:
         - Business Name: "${clientName}".
-        - Details: ${context}
-        - Common Themes: Clean hotels, smooth planning, "value for money", responsive staff.
+        - Context: ${context}
+        ${destination ? `- CRITICAL INSTRUCTION: The review MUST be about a trip to "${destination}". Mention specific details about "${destination}" (e.g., local spots, weather, specific hotels if known, or just the vibe/places).` : ''}
 
         *** GENERATION PROFILE: ${profileKey} ***
         1. LENGTH: ${profile.length_desc}
-        2. NAMING RULE (CRITICAL): ${profile.naming_rule}
-        3. TOPIC FOCUS: ${selectedTopic}
-        4. OPENING: Start with something like: "${selectedOpening}"
+        2. NAMING RULE: ${profile.naming_rule}
+        3. TOPIC: Focus on "${selectedTopic}".
+        
+        *** STYLE GUIDE (Indian English Nuances) ***
+        - Write like a real person from India.
+        - Use simple, everyday language. 
+        - Occasionally use Indian-English phrases like "upto the mark", "very nice experience", "co-operative staff", "budget friendly".
+        - It is okay to have minor grammatical imperfections (e.g., "Food was good quality", "Staff support was nice").
+        - AVOID: Perfection. Real reviews are rarely perfectly structured.
+        - AVOID: "Seamless", "Impeccable", "Unforgettable", "Top-notch", "Gem". These are dead giveaways.
+        - INSTEAD OF "Seamless experience", SAY "Everything went smoothly" or "No issues at all".
+        - INSTEAD OF "I highly recommend", SAY "Must visit", "Go for it", or "Definitely recommend".
 
-        *** STYLE GUIDE (Indian English) ***
-        - Use phrases like "upto the mark", "very reasonable", "on timely manner".
-        - Keep it simple. Don't use fancy AI words.
-        - Examples of style:
+        EXAMPLES OF AUTHENTIC TONE:
         ${examplesText}
 
-        STRICT NEGATIVE CONSTRAINTS:
-        - NO "AI words" like: "unforgettable", "seamless", "top-notch", "gem", "impeccable".
-        - Do NOT mention "Kerala" unless provided in input.
-        - If Profile is SHORT, do NOT ramble. Get to the point.
-        - If Profile is LONG, make sure to include the Name/Brand naturally.
+        OUTPUT:
+        Just the review text. No quotes.
     `;
 
     for (const modelName of MODELS_TO_TRY) {

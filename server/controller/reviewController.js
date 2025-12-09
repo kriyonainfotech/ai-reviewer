@@ -18,10 +18,12 @@ exports.getReviews = async (req, res, next) => {
 };
 
 // @desc    Get a random review for a client
-// @route   GET /api/client/:clientId/random-review
+// @route   GET /api/client/:clientId/random-review?destination=Goa
 exports.getRandomReview = async (req, res, next) => {
     try {
         const { clientId } = req.params;
+        const { destination } = req.query; // Get destination from query
+
         const data = await Client.findOne({ clientId: clientId });
 
         if (!data) {
@@ -32,7 +34,8 @@ exports.getRandomReview = async (req, res, next) => {
         const aiReview = await generateUniqueReview(
             data.clientName,
             data.businessDescription,
-            data.businessServices
+            data.businessServices,
+            destination // Pass destination to AI Service
         );
 
         console.log("AI Review Generation Attempted");
